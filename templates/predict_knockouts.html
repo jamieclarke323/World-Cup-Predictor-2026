@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>
+
+    Predict Knockout Matches
+
+</h1>
+
+{% if no_fixtures %}
+
+<p>
+
+    You will be able to predict
+    the scores of the knockout matches
+    once those fixtures have been decided.
+
+</p>
+
+{% else %}
+
+<div class="knockout-grid">
+
+{% for fixture in fixtures %}
+
+<div class="knockout-card">
+
+<div class="knockout-fixture">
+
+    <div class="knockout-team">
+
+        <span class="team-flag">
+
+            {{ fixture.home_flag }}
+
+        </span>
+
+        <span>
+
+            {{ fixture.home_team }}
+
+        </span>
+
+    </div>
+
+    <div class="fixture-time">
+
+        {{ fixture.kickoff }}
+
+    </div>
+
+    <div class="knockout-team away">
+
+        <span>
+
+            {{ fixture.away_team }}
+
+        </span>
+
+        <span class="team-flag">
+
+            {{ fixture.away_flag }}
+
+        </span>
+
+    </div>
+
+</div>
+
+<div class="score-inputs">
+
+        <input
+            type="number"
+            min="0"
+            max="9"
+            value="{{ prediction_map.get(fixture.id).home_score if prediction_map.get(fixture.id) else 0 }}"
+            class="score-input"
+            data-fixture="{{ fixture.id }}"
+            data-side="home">
+{% if current_time >= fixture.kickoff %}
+disabled
+{% endif %}
+        <span class="score-divider">-</span>
+
+        <input
+            type="number"
+            min="0"
+            max="9"
+            value="{{ prediction_map.get(fixture.id).away_score if prediction_map.get(fixture.id) else 0 }}"
+            class="score-input"
+            data-fixture="{{ fixture.id }}"
+            data-side="away">
+{% if current_time >= fixture.kickoff %}
+disabled
+{% endif %}
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+<script>
+
+const inputs = document.querySelectorAll(
+    '.score-input'
+)
+
+inputs.forEach(input => {
+
+    input.addEventListener(
+        'change',
+        async () => {
+
+            const fixtureId =
+                input.dataset.fixture
+
+            const card =
+                input.closest('.fixture-card')
+
+            const homeInput =
+                card.querySelector(
+                    '[data-side="home"]'
+                )
+                
+
+            const awayInput =
+                card.querySelector(
+                    '[data-side="away"]'
+                )
+
+            await fetch(
+                '/save-knockout-prediction',
+                {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type':
+                        'application/json'
+                    },
+
+                    body: JSON.stringify({
+
+                        fixture_id: fixtureId,
+
+                        home_score:
+                            homeInput.value,
+
+                        away_score:
+                            awayInput.value
+                    })
+                }
+            )
+        }
+    )
+})
+
+</script>
+
+{% endblock %}

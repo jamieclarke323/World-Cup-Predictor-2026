@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="page-title">
+
+    Leaderboard
+
+</h1>
+
+<div class="league-table-wrapper">
+
+<table class="league-table">
+
+    <thead>
+
+        <tr>
+
+            <th>#</th>
+
+            <th>Name</th>
+
+            <th>Group</th>
+
+            <th>KO</th>
+
+            <th>Total</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for user in leaderboard_data %}
+
+        <tr>
+
+            <td>{{ loop.index }}</td>
+
+            <td>{{ user.name }}</td>
+
+            <td>{{ user.group_points }}</td>
+
+            <td>{{ user.knockout_points }}</td>
+
+            <td><strong>{{ user.total_points }}</strong></td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

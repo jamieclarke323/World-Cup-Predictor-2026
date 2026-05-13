@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>
+
+    World Cup Standings
+
+</h1>
+
+<div class="standings-grid">
+
+    {% for group, table in standings_data.items() %}
+
+    <div class="group-card">
+
+        <h2>
+
+            Group {{ group }}
+
+        </h2>
+
+        <table class="leaderboard-table">
+
+            <tr>
+
+                <th>Team</th>
+                <th>W</th>
+                <th>D</th>
+                <th>L</th>
+                <th>F</th>
+                <th>A</th>
+                <th>+/-</th>
+                <th>PTS</th>
+
+            </tr>
+
+            {% for team in table %}
+
+            <tr
+                class="
+                {% if loop.index == 1 %}
+                    qualified-top
+                {% elif loop.index == 2 %}
+                    qualified-second
+                {% elif loop.index == 3 %}
+                    qualified-third
+                {% endif %}
+                "
+            >
+
+                <td>{{ team.team }}</td>
+                <td>{{ team.wins }}</td>
+                <td>{{ team.draws }}</td>
+                <td>{{ team.losses }}</td>
+                <td>{{ team.gf }}</td>
+                <td>{{ team.ga }}</td>
+                <td>{{ team.gd }}</td>
+
+                <td>
+
+                    <strong>
+
+                        {{ team.points }}
+
+                    </strong>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

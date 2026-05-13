@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Admin: Update Knockout Fixtures</h1>
+
+{% for fixture in fixtures %}
+
+<form method="POST" class="admin-card">
+
+    <input type="hidden" name="fixture_id" value="{{ fixture.id }}">
+
+    <p><strong>{{ fixture.stage }}</strong></p>
+
+    <p>{{ fixture.kickoff }}</p>
+
+    <form method="POST" class="admin-card">
+
+    <input type="hidden" name="fixture_id" value="{{ fixture.id }}">
+
+    <p><strong>{{ fixture.stage }}</strong></p>
+    <p>{{ fixture.kickoff }}</p>
+
+    <label>Home team</label>
+    <select name="home_selection">
+        {% for flag, country in flags %}
+            <option value="{{ country }}|{{ flag }}"
+                {% if fixture.home_team == country %}selected{% endif %}>
+                {{ country }} {{ flag }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Away team</label>
+    <select name="away_selection">
+        {% for flag, country in flags %}
+            <option value="{{ country }}|{{ flag }}"
+                {% if fixture.away_team == country %}selected{% endif %}>
+                {{ country }} {{ flag }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Save</button>
+
+</form>
+
+{% endfor %}
+
+{% endblock %}
