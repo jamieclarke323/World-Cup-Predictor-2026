@@ -12,7 +12,7 @@ fixtures = [
         2026,
         6,
         11,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -20,7 +20,7 @@ fixtures = [
 },
 
 {
-    'home_team': 'Korea Republic',
+    'home_team': 'South Korea',
     'away_team': 'Czechia',
     'home_flag': '🇰🇷',
     'away_flag': '🇨🇿',
@@ -28,7 +28,7 @@ fixtures = [
         2026,
         6,
         12,
-        2,
+        3,
         0
     ),
     'stage': 'GROUP',
@@ -44,7 +44,7 @@ fixtures = [
         2026,
         6,
         12,
-        19,
+        20,
         00
     ),
     'stage': 'GROUP',
@@ -60,7 +60,7 @@ fixtures = [
         2026,
         6,
         13,
-        1,
+        2,
         0
     ),
     'stage': 'GROUP',
@@ -76,7 +76,7 @@ fixtures = [
         2026,
         6,
         13,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -92,7 +92,7 @@ fixtures = [
         2026,
         6,
         13,
-        22,
+        23,
         0
     ),
     'stage': 'GROUP',
@@ -108,7 +108,7 @@ fixtures = [
         2026,
         6,
         14,
-        1,
+        2,
         0
     ),
     'stage': 'GROUP',
@@ -124,7 +124,7 @@ fixtures = [
         2026,
         6,
         14,
-        4,
+        5,
         0
     ),
     'stage': 'GROUP',
@@ -139,7 +139,7 @@ fixtures = [
         2026,
         6,
         14,
-        17,
+        18,
         0
     ),
     'stage': 'GROUP',
@@ -155,7 +155,7 @@ fixtures = [
         2026,
         6,
         14,
-        20,
+        21,
         0
     ),
     'stage': 'GROUP',
@@ -170,9 +170,9 @@ fixtures = [
     'kickoff': datetime(
         2026,
         6,
-        14,
-        23,
-        0
+        15,
+        0,
+        1
     ),
     'stage': 'GROUP',
     'group_name': 'E'
@@ -187,7 +187,7 @@ fixtures = [
         2026,
         6,
         15,
-        2,
+        3,
         0
     ),
     'stage': 'GROUP',
@@ -203,7 +203,7 @@ fixtures = [
         2026,
         6,
         15,
-        16,
+        17,
         0
     ),
     'stage': 'GROUP',
@@ -219,7 +219,7 @@ fixtures = [
         2026,
         6,
         15,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -235,7 +235,7 @@ fixtures = [
         2026,
         6,
         15,
-        22,
+        23,
         0
     ),
     'stage': 'GROUP',
@@ -251,7 +251,7 @@ fixtures = [
         2026,
         6,
         16,
-        1,
+        2,
         0
     ),
     'stage': 'GROUP',
@@ -267,7 +267,7 @@ fixtures = [
         2026,
         6,
         16,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -283,7 +283,7 @@ fixtures = [
         2026,
         6,
         16,
-        22,
+        23,
         0
     ),
     'stage': 'GROUP',
@@ -299,7 +299,7 @@ fixtures = [
         2026,
         6,
         17,
-        1,
+        2,
         0
     ),
     'stage': 'GROUP',
@@ -315,7 +315,7 @@ fixtures = [
         2026,
         6,
         17,
-        4,
+        5,
         0
     ),
     'stage': 'GROUP',
@@ -331,7 +331,7 @@ fixtures = [
         2026,
         6,
         17,
-        17,
+        18,
         0
     ),
     'stage': 'GROUP',
@@ -347,7 +347,7 @@ fixtures = [
         2026,
         6,
         17,
-        20,
+        21,
         0
     ),
     'stage': 'GROUP',
@@ -363,8 +363,8 @@ fixtures = [
         2026,
         6,
         17,
-        23,
-        0
+        0,
+        1
     ),
     'stage': 'GROUP',
     'group_name': 'L'
@@ -379,7 +379,7 @@ fixtures = [
         2026,
         6,
         18,
-        2,
+        3,
         0
     ),
     'stage': 'GROUP',
@@ -394,7 +394,7 @@ fixtures = [
         2026,
         6,
         18,
-        16,
+        17,
         0
     ),
     'stage': 'GROUP',
@@ -410,7 +410,7 @@ fixtures = [
         2026,
         6,
         18,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -426,7 +426,7 @@ fixtures = [
         2026,
         6,
         18,
-        22,
+        23,
         0
     ),
     'stage': 'GROUP',
@@ -435,14 +435,14 @@ fixtures = [
 
 {
     'home_team': 'Mexico',
-    'away_team': 'Korea Republic',
+    'away_team': 'South Korea',
     'home_flag': '🇲🇽',
     'away_flag': '🇰🇷',
     'kickoff': datetime(
         2026,
         6,
         19,
-        1,
+        2,
         0
     ),
     'stage': 'GROUP',
@@ -458,7 +458,7 @@ fixtures = [
         2026,
         6,
         19,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -474,7 +474,7 @@ fixtures = [
         2026,
         6,
         19,
-        22,
+        23,
         0
     ),
     'stage': 'GROUP',
@@ -490,7 +490,7 @@ fixtures = [
         2026,
         6,
         20,
-        1,
+        2,
         0
     ),
     'stage': 'GROUP',
@@ -506,7 +506,7 @@ fixtures = [
         2026,
         6,
         20,
-        4,
+        5,
         0
     ),
     'stage': 'GROUP',
@@ -522,7 +522,7 @@ fixtures = [
         2026,
         6,
         20,
-        17,
+        18,
         0
     ),
     'stage': 'GROUP',
@@ -538,7 +538,7 @@ fixtures = [
         2026,
         6,
         20,
-        20,
+        21,
         0
     ),
     'stage': 'GROUP',
@@ -554,7 +554,7 @@ fixtures = [
         2026,
         6,
         21,
-        0,
+        1,
         0
     ),
     'stage': 'GROUP',
@@ -570,7 +570,7 @@ fixtures = [
         2026,
         6,
         21,
-        4,
+        5,
         0
     ),
     'stage': 'GROUP',
@@ -586,7 +586,7 @@ fixtures = [
         2026,
         6,
         21,
-        16,
+        17,
         0
     ),
     'stage': 'GROUP',
@@ -602,7 +602,7 @@ fixtures = [
         2026,
         6,
         21,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -618,7 +618,7 @@ fixtures = [
         2026,
         6,
         21,
-        22,
+        23,
         0
     ),
     'stage': 'GROUP',
@@ -634,7 +634,7 @@ fixtures = [
         2026,
         6,
         22,
-        1,
+        2,
         0
     ),
     'stage': 'GROUP',
@@ -649,7 +649,7 @@ fixtures = [
         2026,
         6,
         22,
-        17,
+        18,
         0
     ),
     'stage': 'GROUP',
@@ -665,7 +665,7 @@ fixtures = [
         2026,
         6,
         22,
-        21,
+        22,
         0
     ),
     'stage': 'GROUP',
@@ -681,7 +681,7 @@ fixtures = [
         2026,
         6,
         23,
-        0,
+        1,
         0
     ),
     'stage': 'GROUP',
@@ -697,7 +697,7 @@ fixtures = [
         2026,
         6,
         23,
-        3,
+        4,
         0
     ),
     'stage': 'GROUP',
@@ -713,7 +713,7 @@ fixtures = [
         2026,
         6,
         23,
-        17,
+        18,
         0
     ),
     'stage': 'GROUP',
@@ -729,7 +729,7 @@ fixtures = [
         2026,
         6,
         23,
-        20,
+        21,
         0
     ),
     'stage': 'GROUP',
@@ -745,7 +745,7 @@ fixtures = [
         2026,
         6,
         23,
-        23,
+        0,
         0
     ),
     'stage': 'GROUP',
@@ -761,7 +761,7 @@ fixtures = [
         2026,
         6,
         24,
-        2,
+        3,
         0
     ),
     'stage': 'GROUP',
@@ -777,7 +777,7 @@ fixtures = [
         2026,
         6,
         24,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -793,7 +793,7 @@ fixtures = [
         2026,
         6,
         24,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -809,7 +809,7 @@ fixtures = [
         2026,
         6,
         24,
-        22,
+        23,
         0
     ),
     'stage': 'GROUP',
@@ -825,7 +825,7 @@ fixtures = [
         2026,
         6,
         24,
-        22,
+        23,
         0
     ),
     'stage': 'GROUP',
@@ -841,7 +841,7 @@ fixtures = [
         2026,
         6,
         25,
-        1,
+        2,
         0
     ),
     'stage': 'GROUP',
@@ -850,14 +850,14 @@ fixtures = [
 
 {
     'home_team': 'South Africa',
-    'away_team': 'Korea Republic',
+    'away_team': 'South Korea',
     'home_flag': '🇿🇦',
     'away_flag': '🇰🇷',
     'kickoff': datetime(
         2026,
         6,
         25,
-        1,
+        2,
         0
     ),
     'stage': 'GROUP',
@@ -873,7 +873,7 @@ fixtures = [
         2026,
         6,
         25,
-        20,
+        21,
         0
     ),
     'stage': 'GROUP',
@@ -889,7 +889,7 @@ fixtures = [
         2026,
         6,
         25,
-        20,
+        21,
         0
     ),
     'stage': 'GROUP',
@@ -903,7 +903,7 @@ fixtures = [
         2026,
         6,
         25,
-        23,
+        0,
         0
     ),
     'stage': 'GROUP',
@@ -919,7 +919,7 @@ fixtures = [
         2026,
         6,
         25,
-        23,
+        0,
         0
     ),
     'stage': 'GROUP',
@@ -935,7 +935,7 @@ fixtures = [
         2026,
         6,
         26,
-        2,
+        3,
         0
     ),
     'stage': 'GROUP',
@@ -951,7 +951,7 @@ fixtures = [
         2026,
         6,
         26,
-        2,
+        3,
         0
     ),
     'stage': 'GROUP',
@@ -967,7 +967,7 @@ fixtures = [
         2026,
         6,
         26,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -983,7 +983,7 @@ fixtures = [
         2026,
         6,
         26,
-        19,
+        20,
         0
     ),
     'stage': 'GROUP',
@@ -999,7 +999,7 @@ fixtures = [
         2026,
         6,
         27,
-        0,
+        1,
         0
     ),
     'stage': 'GROUP',
@@ -1015,7 +1015,7 @@ fixtures = [
         2026,
         6,
         27,
-        0,
+        1,
         0
     ),
     'stage': 'GROUP',
@@ -1031,7 +1031,7 @@ fixtures = [
         2026,
         6,
         27,
-        3,
+        4,
         0
     ),
     'stage': 'GROUP',
@@ -1047,7 +1047,7 @@ fixtures = [
         2026,
         6,
         27,
-        3,
+        4,
         0
     ),
     'stage': 'GROUP',
@@ -1063,7 +1063,7 @@ fixtures = [
         2026,
         6,
         27,
-        21,
+        22,
         0
     ),
     'stage': 'GROUP',
@@ -1079,7 +1079,7 @@ fixtures = [
         2026,
         6,
         27,
-        21,
+        22,
         0
     ),
     'stage': 'GROUP',
@@ -1094,8 +1094,8 @@ fixtures = [
     'kickoff': datetime(
         2026,
         6,
-        27,
-        23,
+        28,
+        0,
         30
     ),
     'stage': 'GROUP',
@@ -1110,8 +1110,8 @@ fixtures = [
     'kickoff': datetime(
         2026,
         6,
-        27,
-        23,
+        28,
+        0,
         30
     ),
     'stage': 'GROUP',
@@ -1127,7 +1127,7 @@ fixtures = [
         2026,
         6,
         28,
-        2,
+        3,
         0
     ),
     'stage': 'GROUP',
@@ -1143,7 +1143,7 @@ fixtures = [
         2026,
         6,
         28,
-        2,
+        3,
         0
     ),
     'stage': 'GROUP',
@@ -1158,7 +1158,7 @@ fixtures = [
         2026,
         6,
         28,
-        19,
+        20,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1174,7 +1174,7 @@ fixtures = [
         2026,
         6,
         29,
-        17,
+        18,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1190,7 +1190,7 @@ fixtures = [
         2026,
         6,
         29,
-        20,
+        21,
         30
     ),
     'stage': 'ROUND_OF_32',
@@ -1206,7 +1206,7 @@ fixtures = [
         2026,
         6,
         30,
-        1,
+        2,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1222,7 +1222,7 @@ fixtures = [
         2026,
         6,
         30,
-        17,
+        18,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1238,7 +1238,7 @@ fixtures = [
         2026,
         6,
         30,
-        21,
+        22,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1254,7 +1254,7 @@ fixtures = [
         2026,
         7,
         1,
-        1,
+        2,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1270,7 +1270,7 @@ fixtures = [
         2026,
         7,
         1,
-        16,
+        17,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1286,7 +1286,7 @@ fixtures = [
         2026,
         7,
         1,
-        20,
+        21,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1302,7 +1302,7 @@ fixtures = [
         2026,
         7,
         2,
-        0,
+        1,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1318,7 +1318,7 @@ fixtures = [
         2026,
         7,
         2,
-        19,
+        20,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1333,9 +1333,9 @@ fixtures = [
     'kickoff': datetime(
         2026,
         7,
-        2,
-        23,
-        0
+        3,
+        0,
+        1
     ),
     'stage': 'ROUND_OF_32',
     'group_name': None
@@ -1350,7 +1350,7 @@ fixtures = [
         2026,
         7,
         3,
-        3,
+        4,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1366,7 +1366,7 @@ fixtures = [
         2026,
         7,
         3,
-        18,
+        19,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1382,7 +1382,7 @@ fixtures = [
         2026,
         7,
         3,
-        22,
+        23,
         0
     ),
     'stage': 'ROUND_OF_32',
@@ -1398,7 +1398,7 @@ fixtures = [
         2026,
         7,
         4,
-        1,
+        2,
         30
     ),
     'stage': 'ROUND_OF_32',
@@ -1412,7 +1412,7 @@ fixtures = [
         2026,
         7,
         4,
-        17,
+        18,
         0
     ),
     'stage': 'ROUND_OF_16',
@@ -1428,7 +1428,7 @@ fixtures = [
         2026,
         7,
         4,
-        21,
+        22,
         0
     ),
     'stage': 'ROUND_OF_16',
@@ -1444,7 +1444,7 @@ fixtures = [
         2026,
         7,
         5,
-        20,
+        21,
         0
     ),
     'stage': 'ROUND_OF_16',
@@ -1460,7 +1460,7 @@ fixtures = [
         2026,
         7,
         6,
-        0,
+        1,
         0
     ),
     'stage': 'ROUND_OF_16',
@@ -1476,55 +1476,55 @@ fixtures = [
         2026,
         7,
         6,
-        19,
-        0
-    ),
-    'stage': 'ROUND_OF_16',
-    'group_name': None
-},
-
-{
-    'home_team': 'TBC',
-    'away_team': 'TBC',
-    'home_flag': '',
-    'away_flag': '',
-    'kickoff': datetime(
-        2026,
-        7,
-        7,
-        0,
-        0
-    ),
-    'stage': 'ROUND_OF_16',
-    'group_name': None
-},
-
-{
-    'home_team': 'TBC',
-    'away_team': 'TBC',
-    'home_flag': '',
-    'away_flag': '',
-    'kickoff': datetime(
-        2026,
-        7,
-        7,
-        16,
-        0
-    ),
-    'stage': 'ROUND_OF_16',
-    'group_name': None
-},
-
-{
-    'home_team': 'TBC',
-    'away_team': 'TBC',
-    'home_flag': '',
-    'away_flag': '',
-    'kickoff': datetime(
-        2026,
-        7,
-        7,
         20,
+        0
+    ),
+    'stage': 'ROUND_OF_16',
+    'group_name': None
+},
+
+{
+    'home_team': 'TBC',
+    'away_team': 'TBC',
+    'home_flag': '',
+    'away_flag': '',
+    'kickoff': datetime(
+        2026,
+        7,
+        7,
+        1,
+        0
+    ),
+    'stage': 'ROUND_OF_16',
+    'group_name': None
+},
+
+{
+    'home_team': 'TBC',
+    'away_team': 'TBC',
+    'home_flag': '',
+    'away_flag': '',
+    'kickoff': datetime(
+        2026,
+        7,
+        7,
+        17,
+        0
+    ),
+    'stage': 'ROUND_OF_16',
+    'group_name': None
+},
+
+{
+    'home_team': 'TBC',
+    'away_team': 'TBC',
+    'home_flag': '',
+    'away_flag': '',
+    'kickoff': datetime(
+        2026,
+        7,
+        7,
+        21,
         0
     ),
     'stage': 'ROUND_OF_16',
@@ -1540,7 +1540,7 @@ fixtures = [
         2026,
         7,
         9,
-        20,
+        21,
         0
     ),
     'stage': 'QUARTER_FINAL',
@@ -1556,7 +1556,7 @@ fixtures = [
         2026,
         7,
         10,
-        19,
+        20,
         0
     ),
     'stage': 'QUARTER_FINAL',
@@ -1572,7 +1572,7 @@ fixtures = [
         2026,
         7,
         11,
-        21,
+        22,
         0
     ),
     'stage': 'QUARTER_FINAL',
@@ -1588,7 +1588,7 @@ fixtures = [
         2026,
         7,
         12,
-        1,
+        2,
         0
     ),
     'stage': 'QUARTER_FINAL',
@@ -1604,7 +1604,7 @@ fixtures = [
         2026,
         7,
         14,
-        19,
+        20,
         0
     ),
     'stage': 'SEMI_FINAL',
@@ -1620,7 +1620,7 @@ fixtures = [
         2026,
         7,
         15,
-        19,
+        20,
         0
     ),
     'stage': 'SEMI_FINAL',
@@ -1636,7 +1636,7 @@ fixtures = [
         2026,
         7,
         18,
-        21,
+        22,
         0
     ),
     'stage': 'THIRD_PLACE',
@@ -1652,7 +1652,7 @@ fixtures = [
         2026,
         7,
         19,
-        19,
+        20,
         0
     ),
     'stage': 'FINAL',
@@ -1663,36 +1663,91 @@ fixtures = [
 
 with app.app_context():
 
+    # Clear all existing fixtures
+    Fixture.query.delete()
+    db.session.commit()
+
     for fixture_data in fixtures:
 
-        existing_fixture = Fixture.query.filter_by(
+        fixture = Fixture(
 
-    home_team=fixture_data['home_team'],
-    away_team=fixture_data['away_team'],
-    kickoff=fixture_data['kickoff']
+            home_team=fixture_data['home_team'],
 
-        ).first()
+            away_team=fixture_data['away_team'],
 
-        if not existing_fixture:
+            home_flag=fixture_data['home_flag'],
 
-            fixture = Fixture(
+            away_flag=fixture_data['away_flag'],
 
-                home_team=fixture_data['home_team'],
+            kickoff=fixture_data['kickoff'],
 
-                away_team=fixture_data['away_team'],
+            stage=fixture_data['stage'],
 
-                home_flag=fixture_data['home_flag'],
+            group_name=fixture_data['group_name']
+        )
 
-                away_flag=fixture_data['away_flag'],
+        db.session.add(fixture)
 
-                kickoff=fixture_data['kickoff'],
+    db.session.commit()
 
-                stage=fixture_data['stage'],
+    # Convert emoji flags to PNG filenames
+    flag_map = {
+        'Algeria': 'algeria.png',
+        'Argentina': 'argentina.png',
+        'Australia': 'australia.png',
+        'Austria': 'austria.png',
+        'Belgium': 'belgium.png',
+        'Bosnia and Herzegovina': 'bosnia.png',
+        'Brazil': 'brazil.png',
+        'Canada': 'canada.png',
+        'Cape Verde': 'capeverde.png',
+        'Colombia': 'colombia.png',
+        'Croatia': 'croatia.png',
+        'Curaçao': 'curacao.png',
+        'Czechia': 'czechia.png',
+        'DR Congo': 'drcongo.png',
+        'Ecuador': 'ecuador.png',
+        'Egypt': 'egypt.png',
+        'England': 'england.png',
+        'France': 'france.png',
+        'Germany': 'germany.png',
+        'Ghana': 'ghana.png',
+        'Haiti': 'haiti.png',
+        'Iran': 'iran.png',
+        'Iraq': 'iraq.png',
+        'Ivory Coast': 'ivorycoast.png',
+        'Japan': 'japan.png',
+        'Jordan': 'jordan.png',
+        'Mexico': 'mexico.png',
+        'Morocco': 'morocco.png',
+        'Netherlands': 'netherlands.png',
+        'New Zealand': 'newzealand.png',
+        'Norway': 'norway.png',
+        'Panama': 'panama.png',
+        'Paraguay': 'paraguay.png',
+        'Portugal': 'portugal.png',
+        'Qatar': 'qatar.png',
+        'Scotland': 'scotland.png',
+        'Senegal': 'senegal.png',
+        'Saudi Arabia': 'saudiarabia.png',
+        'South Africa': 'southafrica.png',
+        'South Korea': 'southkorea.png',
+        'Spain': 'spain.png',
+        'Sweden': 'sweden.png',
+        'Switzerland': 'switzerland.png',
+        'Tunisia': 'tunisia.png',
+        'Turkey': 'turkey.png',
+        'Uruguay': 'uruguay.png',
+        'USA': 'usa.png',
+        'Uzbekistan': 'uzbekistan.png'
+    }
 
-                group_name=fixture_data['group_name']
-            )
-
-            db.session.add(fixture)
+    fixtures = Fixture.query.all()
+    for fixture in fixtures:
+        if fixture.home_team in flag_map:
+            fixture.home_flag = flag_map[fixture.home_team]
+        if fixture.away_team in flag_map:
+            fixture.away_flag = flag_map[fixture.away_team]
 
     db.session.commit()
 

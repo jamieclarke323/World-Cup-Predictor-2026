@@ -17,12 +17,27 @@ from flask_login import (
     login_required,
     current_user
 )
+from zoneinfo import ZoneInfo
+
+import random
+
+import requests
+from dateutil import parser
+from datetime import datetime, timedelta
+
+from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'supersecretkey'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+#Use this when uploaded to pythonanywhere app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/jamieclarke323/worldcupapp/database.db'#
+
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -49,11 +64,11 @@ class Fixture(db.Model):
     )
 
     home_flag = db.Column(
-        db.String(10)
+        db.String(100)
     )
 
     away_flag = db.Column(
-        db.String(10)
+        db.String(100)
     )
 
     match_date = db.Column(
@@ -62,7 +77,7 @@ class Fixture(db.Model):
 
     kickoff = db.Column(
     db.DateTime
-    )   
+    )
     home_score = db.Column(
     db.Integer,
     nullable=True
@@ -77,7 +92,6 @@ class Fixture(db.Model):
     group_name = db.Column(
     db.String(10)
 )
-
 
 class User(UserMixin, db.Model):
 
@@ -102,7 +116,7 @@ class User(UserMixin, db.Model):
     password = db.Column(
         db.String(200)
     )
-    
+
     is_admin = db.Column(
     db.Boolean,
     default=False
@@ -128,7 +142,7 @@ class Prediction(db.Model):
     prediction = db.Column(
         db.String(20)
     )
-    
+
     points = db.Column(
     db.Integer,
     default=0
@@ -167,11 +181,135 @@ class KnockoutPrediction(db.Model):
         db.Integer,
         default=0
     )
-    
+
     points = db.Column(
     db.Integer,
     default=0
 )
+
+def update_scores():
+    with app.app_context():
+
+        url = "https://v3.football.api-sports.io/fixtures?league=1&season=2026"
+
+        headers = {
+            "x-apisports-key": "https://www.api-football.com/"
+        }
+
+        response = requests.get(url, headers=headers)
+        data = response.json()
+
+        for match in data["response"]:
+
+            home = match["teams"]["home"]["name"]
+            away = match["teams"]["away"]["name"]
+
+            home_score = match["goals"]["home"]
+            away_score = match["goals"]["away"]
+
+            fixture = Fixture.query.filter_by(
+                home_team=home,
+                away_team=away
+            ).first()
+
+            if fixture and home_score is not None:
+
+                fixture.home_score = home_score
+                fixture.away_score = away_score
+
+        db.session.commit()
+
+@app.context_processor
+def inject_background():
+    backgrounds = ['canada.jpg', 'usa.jpg', 'mexico.jpg']
+    return {'bg_image': random.choice(backgrounds)}
+
+@app.route('/leaderboard')
+def leaderboard():
+
+    users = User.query.filter(User.is_admin == False).all()
+
+    leaderboard_data = []
+
+    for user in users:
+
+        group_points = 0
+        knockout_points = 0
+
+        # GROUP POINTS
+        group_predictions = Prediction.query.filter_by(
+            user_id=user.id
+        ).all()
+
+        for prediction in group_predictions:
+
+            fixture = Fixture.query.get(prediction.fixture_id)
+
+            if fixture and fixture.home_score is not None and fixture.away_score is not None:
+
+                if fixture.home_score > fixture.away_score:
+                    actual_result = 'HOME'
+                elif fixture.home_score < fixture.away_score:
+                    actual_result = 'AWAY'
+                else:
+                    actual_result = 'DRAW'
+
+                if prediction.prediction == actual_result:
+                    group_points += 2
+
+        # KNOCKOUT POINTS
+        knockout_predictions = KnockoutPrediction.query.filter_by(
+            user_id=user.id
+        ).all()
+
+        for prediction in knockout_predictions:
+
+            fixture = Fixture.query.get(prediction.fixture_id)
+
+            if fixture and fixture.home_score is not None and fixture.away_score is not None:
+
+                if prediction.home_score == fixture.home_score and prediction.away_score == fixture.away_score:
+                    knockout_points += 5
+
+                else:
+
+                    if prediction.home_score > prediction.away_score:
+                        predicted_result = 'HOME'
+                    elif prediction.home_score < prediction.away_score:
+                        predicted_result = 'AWAY'
+                    else:
+                        predicted_result = 'DRAW'
+
+                    if fixture.home_score > fixture.away_score:
+                        actual_result = 'HOME'
+                    elif fixture.home_score < fixture.away_score:
+                        actual_result = 'AWAY'
+                    else:
+                        actual_result = 'DRAW'
+
+                    if predicted_result == actual_result:
+                        knockout_points += 3
+
+        total_points = group_points + knockout_points
+
+        leaderboard_data.append({
+            'name': f'{user.first_name} {user.last_name}',
+            'group_points': group_points,
+            'knockout_points': knockout_points,
+            'total_points': total_points
+        })
+
+    leaderboard_data = sorted(
+        leaderboard_data,
+        key=lambda x: x['total_points'],
+        reverse=True
+    )
+
+    return render_template(
+        'leaderboard.html',
+        leaderboard_data=leaderboard_data
+    )
+
 @app.route('/debug-fixtures')
 def debug_fixtures():
 
@@ -207,7 +345,15 @@ def debug_fixtures():
         '''
 
     return output
+
 @app.route('/')
+def landing():
+    if current_user.is_authenticated:
+        return redirect('/home')
+    return redirect('/login')
+
+@app.route('/home')
+@login_required
 def home():
 
     player_count = User.query.count()
@@ -220,14 +366,13 @@ def home():
         prize_money=prize_money
     )
 
-
 @app.route('/predict-groups')
 @login_required
 def predict_groups():
 
     fixtures = Fixture.query.filter_by(
-    stage='GROUP'
-).all()
+        stage='GROUP'
+    ).all()
 
     predictions = Prediction.query.filter_by(
         user_id=current_user.id
@@ -236,22 +381,60 @@ def predict_groups():
     prediction_map = {}
 
     for prediction in predictions:
+        prediction_map[prediction.fixture_id] = prediction.prediction
 
-        prediction_map[
-            prediction.fixture_id
-        ] = prediction.prediction
+    all_predictions = {}
 
-    current_time = datetime.now()
+    current_time = datetime.utcnow() + timedelta(hours=1)
+
+    for fixture in fixtures:
+
+        fixture_predictions = Prediction.query.filter_by(
+            fixture_id=fixture.id
+        ).all()
+
+        picks = []
+
+        for prediction in fixture_predictions:
+
+            user = User.query.get(prediction.user_id)
+
+            picks.append({
+                'name': user.first_name + ' ' + user.last_name,
+                'prediction': prediction.prediction
+            })
+
+        home_picks = []
+        draw_picks = []
+        away_picks = []
+
+        for pick in picks:
+
+            if pick['prediction'] == 'HOME':
+                home_picks.append(pick)
+
+            elif pick['prediction'] == 'DRAW':
+                draw_picks.append(pick)
+
+            else:
+                away_picks.append(pick)
+
+        home_picks = sorted(home_picks, key=lambda x: x['name'])
+        draw_picks = sorted(draw_picks, key=lambda x: x['name'])
+        away_picks = sorted(away_picks, key=lambda x: x['name'])
+
+        all_predictions[fixture.id] = {
+            'home': home_picks,
+            'draw': draw_picks,
+            'away': away_picks
+        }
 
     return render_template(
-
         'predict_groups.html',
-
         fixtures=fixtures,
-
         prediction_map=prediction_map,
-
-        current_time=current_time
+        current_time=current_time,
+        all_predictions=all_predictions
     )
 
 @app.route('/predict-knockouts')
@@ -281,7 +464,7 @@ def predict_knockouts():
             prediction.fixture_id
         ] = prediction
 
-    current_time = datetime.now()
+    current_time = datetime.utcnow() + timedelta(hours=1)
 
     return render_template(
 
@@ -294,168 +477,6 @@ def predict_knockouts():
         current_time=current_time,
 
         no_fixtures=False
-    )
-
-
-@app.route('/leaderboard')
-def leaderboard():
-
-    users = User.query.all()
-
-    leaderboard_data = []
-
-    for user in users:
-
-        group_points = 0
-
-        knockout_points = 0
-
-        group_predictions = Prediction.query.filter_by(
-            user_id=user.id
-        ).all()
-
-        for prediction in group_predictions:
-
-            fixture = Fixture.query.get(
-                prediction.fixture_id
-            )
-
-            if (
-                fixture.home_score is not None
-                and
-                fixture.away_score is not None
-            ):
-
-                actual_result = None
-
-                if fixture.home_score > fixture.away_score:
-
-                    actual_result = 'HOME'
-
-                elif fixture.home_score < fixture.away_score:
-
-                    actual_result = 'AWAY'
-
-                else:
-
-                    actual_result = 'DRAW'
-
-                if prediction.prediction == actual_result:
-
-                    group_points += 1
-
-        knockout_predictions = (
-            KnockoutPrediction.query.filter_by(
-                user_id=user.id
-            ).all()
-        )
-
-        for prediction in knockout_predictions:
-
-            fixture = Fixture.query.get(
-                prediction.fixture_id
-            )
-
-            if (
-                fixture.home_score is not None
-                and
-                fixture.away_score is not None
-            ):
-
-                if (
-                    prediction.home_score ==
-                    fixture.home_score
-                    and
-                    prediction.away_score ==
-                    fixture.away_score
-                ):
-
-                    knockout_points += 3
-
-                else:
-
-                    predicted_result = None
-
-                    actual_result = None
-
-                    if (
-                        prediction.home_score >
-                        prediction.away_score
-                    ):
-
-                        predicted_result = 'HOME'
-
-                    elif (
-                        prediction.home_score <
-                        prediction.away_score
-                    ):
-
-                        predicted_result = 'AWAY'
-
-                    else:
-
-                        predicted_result = 'DRAW'
-
-                    if (
-                        fixture.home_score >
-                        fixture.away_score
-                    ):
-
-                        actual_result = 'HOME'
-
-                    elif (
-                        fixture.home_score <
-                        fixture.away_score
-                    ):
-
-                        actual_result = 'AWAY'
-
-                    else:
-
-                        actual_result = 'DRAW'
-
-                    if predicted_result == actual_result:
-
-                        knockout_points += 1
-
-        total_points = (
-            group_points +
-            knockout_points
-        )
-
-        leaderboard_data.append({
-
-            'name':
-                user.first_name +
-                ' ' +
-                user.last_name,
-
-            'group_points':
-                group_points,
-
-            'knockout_points':
-                knockout_points,
-
-            'total_points':
-                total_points
-        })
-
-    leaderboard_data = sorted(
-
-        leaderboard_data,
-
-        key=lambda x:
-            x['total_points'],
-
-        reverse=True
-    )
-
-    return render_template(
-
-        'leaderboard.html',
-
-        leaderboard_data=
-            leaderboard_data
     )
 
 @app.route('/standings')
@@ -586,6 +607,61 @@ def standings():
         standings_data=standings_data
     )
 
+@app.route('/view-predictions')
+@login_required
+def view_predictions():
+
+    selected_user_id = request.args.get('user_id')
+
+    users = User.query.filter(
+        User.is_admin == False
+    ).order_by(User.first_name).all()
+
+    selected_user = None
+
+    group_predictions = []
+    knockout_predictions = []
+    fixtures_by_id = {}
+
+    current_time = datetime.utcnow() + timedelta(hours=1)
+
+    if selected_user_id:
+
+        selected_user = User.query.get(int(selected_user_id))
+
+        # GROUP PREDICTIONS
+
+        group_predictions = Prediction.query.filter_by(
+            user_id=selected_user.id
+        ).all()
+
+        # KNOCKOUT PREDICTIONS
+
+        knockout_predictions = KnockoutPrediction.query.filter_by(
+            user_id=selected_user.id
+        ).all()
+
+        # PRE-FETCH ALL FIXTURES BY ID
+        all_fixtures = Fixture.query.all()
+        fixtures_by_id = {fixture.id: fixture for fixture in all_fixtures}
+
+    return render_template(
+
+        'view_predictions.html',
+
+        users=users,
+
+        selected_user=selected_user,
+
+        group_predictions=group_predictions,
+
+        knockout_predictions=knockout_predictions,
+
+        current_time=current_time,
+
+        fixtures_by_id=fixtures_by_id
+    )
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 
@@ -629,7 +705,7 @@ def register():
     return render_template(
         'register.html'
     )
-    
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -656,14 +732,14 @@ def login():
     return render_template(
         'login.html'
     )
-    
+
 @login_manager.user_loader
 def load_user(user_id):
 
     return User.query.get(
         int(user_id)
     )
-    
+
 
 @app.route('/admin-results')
 def admin_results():
@@ -675,52 +751,103 @@ def admin_results():
         fixtures=fixtures
     )
 
+@app.route('/fix-flags')
+def fix_flags():
+
+    flag_map = {
+        'Algeria': 'algeria.png',
+        'Argentina': 'argentina.png',
+        'Australia': 'australia.png',
+        'Austria': 'austria.png',
+        'Belgium': 'belgium.png',
+        'Bosnia and Herzegovina': 'bosnia.png',
+        'Brazil': 'brazil.png',
+        'Canada': 'canada.png',
+        'Cape Verde': 'capeverde.png',
+        'Colombia': 'colombia.png',
+        'Croatia': 'croatia.png',
+        'Curaçao': 'curacao.png',
+        'Czechia': 'czechia.png',
+        'DR Congo': 'drcongo.png',
+        'Ecuador': 'ecuador.png',
+        'Egypt': 'egypt.png',
+        'England': 'england.png',
+        'France': 'france.png',
+        'Germany': 'germany.png',
+        'Ghana': 'ghana.png',
+        'Haiti': 'haiti.png',
+        'Iran': 'iran.png',
+        'Iraq': 'iraq.png',
+        'Ivory Coast': 'ivorycoast.png',
+        'Japan': 'japan.png',
+        'Jordan': 'jordan.png',
+        'Mexico': 'mexico.png',
+        'Morocco': 'morocco.png',
+        'Netherlands': 'netherlands.png',
+        'New Zealand': 'newzealand.png',
+        'Norway': 'norway.png',
+        'Panama': 'panama.png',
+        'Paraguay': 'paraguay.png',
+        'Portugal': 'portugal.png',
+        'Qatar': 'qatar.png',
+        'Scotland': 'scotland.png',
+        'Senegal': 'senegal.png',
+        'Saudi Arabia': 'saudiarabia.png',
+        'South Africa': 'southafrica.png',
+        'South Korea': 'southkorea.png',
+        'Spain': 'spain.png',
+        'Sweden': 'sweden.png',
+        'Switzerland': 'switzerland.png',
+        'Tunisia': 'tunisia.png',
+        'Turkey': 'turkey.png',
+        'Uruguay': 'uruguay.png',
+        'USA': 'usa.png',
+        'Uzbekistan': 'uzbekistan.png'
+    }
+
+    fixtures = Fixture.query.all()
+
+    for fixture in fixtures:
+
+        if fixture.home_team in flag_map:
+            fixture.home_flag = flag_map[fixture.home_team]
+
+        if fixture.away_team in flag_map:
+            fixture.away_flag = flag_map[fixture.away_team]
+
+    db.session.commit()
+
+    return 'Flags fixed'
 
 @app.route('/update-result', methods=['POST'])
 def update_result():
 
-    print('UPDATE RESULT ROUTE HIT')
+    fixture_id = request.form.get('fixture_id')
+    fixture = Fixture.query.get(int(fixture_id))
 
-    print(request.form)
+    home_score = request.form.get('home_score')
+    away_score = request.form.get('away_score')
+    kickoff = request.form.get('kickoff')
 
-    fixture_id = request.form.get(
-        'fixture_id'
-    )
+    if home_score and home_score.strip():
+        fixture.home_score = int(home_score)
 
-    home_score = request.form.get(
-        'home_score'
-    )
+    if away_score and away_score.strip():
+        fixture.away_score = int(away_score)
 
-    away_score = request.form.get(
-        'away_score'
-    )
-
-    print(fixture_id)
-    print(home_score)
-    print(away_score)
-
-    fixture = Fixture.query.get(
-        fixture_id
-    )
-
-    print(fixture)
-
-    fixture.home_score = int(
-        home_score
-    )
-
-    fixture.away_score = int(
-        away_score
-    )
+    if kickoff and kickoff.strip():
+        try:
+            fixture.kickoff = datetime.strptime(
+    kickoff,
+    '%Y-%m-%dT%H:%M'
+)
+        except:
+            pass
 
     db.session.commit()
 
-    print('DATABASE COMMITTED')
+    return redirect('/admin-results')
 
-    return redirect(
-        '/admin-results'
-    )
-    
 @app.route('/logout')
 @login_required
 def logout():
@@ -753,7 +880,7 @@ def save_knockout_prediction():
         fixture_id
     )
 
-    if datetime.now() >= fixture.kickoff:
+    if datetime.utcnow() + timedelta(hours=1) >= fixture.kickoff:
 
         return {
             'success': False
@@ -795,6 +922,20 @@ def save_knockout_prediction():
     return {
         'success': True
     }
+@app.route('/debug-time')
+def debug_time():
+
+    fixture = Fixture.query.first()
+
+    return f"""
+    NOW: {datetime.now()} <br><br>
+
+    KICKOFF: {fixture.kickoff} <br><br>
+
+    NOW TIMESTAMP: {datetime.now().timestamp()} <br><br>
+
+    KICKOFF TIMESTAMP: {fixture.kickoff.timestamp()}
+    """
 
 @app.route('/save-prediction', methods=['POST'])
 @login_required
@@ -829,7 +970,7 @@ def save_prediction():
         fixture_id
     )
 
-    if datetime.now() >= fixture.kickoff:
+    if datetime.utcnow() + timedelta(hours=1) >= fixture.kickoff:
 
         return {
             'success': False
@@ -872,6 +1013,25 @@ def save_prediction():
 
 print('SAVE PREDICTION ROUTE REGISTERED')
 
+@app.route('/debug-flags')
+def debug_flags():
+
+    fixtures = Fixture.query.all()
+
+    output = ""
+
+    for fixture in fixtures:
+
+        output += f"""
+        {fixture.home_team}
+        =
+        {fixture.home_flag}
+
+        <br><br>
+        """
+
+    return output
+
 @app.route('/admin/knockouts', methods=['GET', 'POST'])
 def admin_knockouts():
 
@@ -899,54 +1059,54 @@ def admin_knockouts():
         return redirect('/admin/knockouts')
     flags = [
     ('', '-'),
-    ('🇩🇿', 'Algeria'),
-    ('🇦🇷', 'Argentina'),
-    ('🇦🇺', 'Australia'),
-    ('🇦🇹', 'Austria'),
-    ('🇧🇪', 'Belgium'),
-    ('🇧🇦', 'Bosnia and Herzegovina'),
-    ('🇧🇷', 'Brazil'),
-    ('🇨🇦', 'Canada'),
-    ('🇨🇻', 'Cabo Verde'),
-    ('🇨🇴', 'Colombia'),
-    ('🇭🇷', 'Croatia'),
-    ('🇨🇼', 'Curaçao'),
-    ('🇨🇿', 'Czechia'),
-    ('🇨🇩', 'DR Congo'),    
-    ('🇪🇨', 'Ecuador'),
-    ('🇪🇬', 'Egypt'),
-    ('🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'England'),
-    ('🇫🇷', 'France'),
-    ('🇩🇪', 'Germany'),
-    ('🇬🇭', 'Ghana'),
-    ('🇭🇹', 'Haiti'),
-    ('🇮🇷', 'Iran'),
-    ('🇮🇶', 'Iraq'),
-    ('🇨🇮', "Ivory Coast"),
-    ('🇯🇵', 'Japan'),
-    ('🇯🇴', 'Jordan'),
-    ('🇰🇷', 'Korea Republic'),
-    ('🇲🇽', 'Mexico'),
-    ('🇲🇦', 'Morocco'),
-    ('🇳🇱', 'Netherlands'),
-    ('🇳🇿', 'New Zealand'),
-    ('🇳🇴', 'Norway'),
-    ('🇵🇦', 'Panama'),
-    ('🇵🇾', 'Paraguay'),
-    ('🇵🇹', 'Portugal'),
-    ('🇶🇦', 'Qatar'),
-    ('🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'Scotland'),
-    ('🇸🇳', 'Senegal'),
-    ('🇸🇦', 'Saudi Arabia'),
-    ('🇿🇦', 'South Africa'),
-    ('🇪🇸', 'Spain'),
-    ('🇸🇪', 'Sweden'),
-    ('🇨🇭', 'Switzerland'),
-    ('🇹🇳', 'Tunisia'),
-    ('🇹🇷', 'Turkey'),
-    ('🇺🇾', 'Uruguay'),
-    ('🇺🇸', 'USA'),
-    ('🇺🇿', 'Uzbekistan')
+    ('algeria.png', 'Algeria'),
+    ('argentina.png', 'Argentina'),
+    ('australia.png', 'Australia'),
+    ('austria.png', 'Austria'),
+    ('belgium.png', 'Belgium'),
+    ('bosnia.png', 'Bosnia and Herzegovina'),
+    ('brazil.png', 'Brazil'),
+    ('canada.png', 'Canada'),
+    ('capeverde.png', 'Cape Verde'),
+    ('colombia.png', 'Colombia'),
+    ('croatia.png', 'Croatia'),
+    ('curacao.png', 'Curaçao'),
+    ('czechia.png', 'Czechia'),
+    ('drcongo.png', 'DR Congo'),
+    ('ecuador.png', 'Ecuador'),
+    ('egypt.png', 'Egypt'),
+    ('england.png󠁢󠁥󠁮󠁧󠁿', 'England'),
+    ('france.png', 'France'),
+    ('germany.png', 'Germany'),
+    ('ghana.png', 'Ghana'),
+    ('haiti.png', 'Haiti'),
+    ('iran.png', 'Iran'),
+    ('iraq.png', 'Iraq'),
+    ('ivorycoast.png', "Ivory Coast"),
+    ('japan.png', 'Japan'),
+    ('jordan.png', 'Jordan'),
+    ('mexico.png', 'Mexico'),
+    ('morocco.png', 'Morocco'),
+    ('netherlands.png', 'Netherlands'),
+    ('newzealnad.png', 'New Zealand'),
+    ('norway.png', 'Norway'),
+    ('panama.png', 'Panama'),
+    ('paraguay.png', 'Paraguay'),
+    ('portugal.png', 'Portugal'),
+    ('qatar.png', 'Qatar'),
+    ('scotland.png󠁢󠁳󠁣󠁴󠁿', 'Scotland'),
+    ('senegal.png', 'Senegal'),
+    ('saudiarabia.png', 'Saudi Arabia'),
+    ('southafrica.png', 'South Africa'),
+    ('southkorea.png', 'South Korea'),
+    ('spain.png', 'Spain'),
+    ('sweden.png', 'Sweden'),
+    ('switzerland.png', 'Switzerland'),
+    ('tunisia.png', 'Tunisia'),
+    ('turkey.png', 'Turkey'),
+    ('uruguay.png', 'Uruguay'),
+    ('usa.png', 'USA'),
+    ('uzbekistan.png', 'Uzbekistan')
 ]
     return render_template(
         'admin_knockouts.html',
@@ -955,6 +1115,10 @@ def admin_knockouts():
     )
 
 print(app.url_map)
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(update_scores, "interval", minutes=5)
+scheduler.start()
 
 if __name__ == '__main__':
 

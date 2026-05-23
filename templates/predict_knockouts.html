@@ -2,73 +2,62 @@
 
 {% block content %}
 
-<h1>
+<h1>Predict Knockout Matches</h1>
 
-    Predict Knockout Matches
-
-</h1>
+Fixtures will be added to this page as the tournament progresses and the knockout stage matchups are confirmed. You will be able to predict the exact score of each knockout match, and earn points based on how accurate your predictions are.
 
 {% if no_fixtures %}
 
 <p>
-
-    You will be able to predict
-    the scores of the knockout matches
-    once those fixtures have been decided.
-
+    You will be able to predict the scores of the knockout matches once those fixtures have been decided.
 </p>
+#delete this bit once fixtures are live#
 
 {% else %}
-
 <div class="knockout-grid">
 
 {% for fixture in fixtures %}
 
-<div class="knockout-card">
+<div class="knockout-card" style="padding:20px;">
 
-<div class="knockout-fixture">
+    <div style="width:100%;">
 
-    <div class="knockout-team">
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            width:100%;
+            font-size:22px;
+            font-weight:bold;
+            margin-bottom:10px;
+        ">
 
-        <span class="team-flag">
+            <span>{{ fixture.home_team }}</span>
 
-            {{ fixture.home_flag }}
+            <span><div class="knockout-stage">
+    {{ fixture.stage.replace('_', ' ').title() }}
+</div></span>
 
-        </span>
+            <span>{{ fixture.away_team }}</span>
 
-        <span>
+        </div>
 
-            {{ fixture.home_team }}
-
-        </span>
-
-    </div>
-
-    <div class="fixture-time">
-
-        {{ fixture.kickoff }}
-
-    </div>
-
-    <div class="knockout-team away">
-
-        <span>
-
-            {{ fixture.away_team }}
-
-        </span>
-
-        <span class="team-flag">
-
-            {{ fixture.away_flag }}
-
-        </span>
+        <div style="
+            text-align:center;
+            font-size:12px;
+            margin-bottom:16px;
+        ">
+            {{ fixture.kickoff.strftime('%a %d %b %-I%p').replace('AM','am').replace('PM','pm') }}
+        </div>
 
     </div>
 
-</div>
-
-<div class="score-inputs">
+    <div style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:12px;
+    ">
 
         <input
             type="number"
@@ -77,11 +66,12 @@
             value="{{ prediction_map.get(fixture.id).home_score if prediction_map.get(fixture.id) else 0 }}"
             class="score-input"
             data-fixture="{{ fixture.id }}"
-            data-side="home">
-{% if current_time >= fixture.kickoff %}
-disabled
-{% endif %}
-        <span class="score-divider">-</span>
+            data-side="home"
+            {% if current_time >= fixture.kickoff %}disabled{% endif %}
+            style="width:60px; height:60px; font-size:28px; text-align:center;"
+        >
+
+        <span style="font-size:28px;">-</span>
 
         <input
             type="number"
@@ -90,10 +80,11 @@ disabled
             value="{{ prediction_map.get(fixture.id).away_score if prediction_map.get(fixture.id) else 0 }}"
             class="score-input"
             data-fixture="{{ fixture.id }}"
-            data-side="away">
-{% if current_time >= fixture.kickoff %}
-disabled
-{% endif %}
+            data-side="away"
+            {% if current_time >= fixture.kickoff %}disabled{% endif %}
+            style="width:60px; height:60px; font-size:28px; text-align:center;"
+        >
+
     </div>
 
 </div>
@@ -106,58 +97,38 @@ disabled
 
 <script>
 
-const inputs = document.querySelectorAll(
-    '.score-input'
-)
+const inputs = document.querySelectorAll('.score-input')
 
 inputs.forEach(input => {
 
-    input.addEventListener(
-        'change',
-        async () => {
+    input.addEventListener('change', async () => {
 
-            const fixtureId =
-                input.dataset.fixture
+        const fixtureId = input.dataset.fixture
 
-            const card =
-                input.closest('.fixture-card')
+        const card = input.closest('.knockout-card')
 
-            const homeInput =
-                card.querySelector(
-                    '[data-side="home"]'
-                )
-                
+        const homeInput = card.querySelector('[data-side="home"]')
 
-            const awayInput =
-                card.querySelector(
-                    '[data-side="away"]'
-                )
+        const awayInput = card.querySelector('[data-side="away"]')
 
-            await fetch(
-                '/save-knockout-prediction',
-                {
+        await fetch('/save-knockout-prediction', {
 
-                    method: 'POST',
+            method: 'POST',
 
-                    headers: {
-                        'Content-Type':
-                        'application/json'
-                    },
+            headers: {
+                'Content-Type': 'application/json'
+            },
 
-                    body: JSON.stringify({
+            body: JSON.stringify({
+                fixture_id: fixtureId,
+                home_score: homeInput.value,
+                away_score: awayInput.value
+            })
 
-                        fixture_id: fixtureId,
+        })
 
-                        home_score:
-                            homeInput.value,
+    })
 
-                        away_score:
-                            awayInput.value
-                    })
-                }
-            )
-        }
-    )
 })
 
 </script>

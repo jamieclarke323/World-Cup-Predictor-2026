@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Player Predictions</h1>
+
+<div class="fixture-card" style="max-width:500px;margin:0 auto 20px auto;">
+
+    <form method="GET">
+
+        <select
+            name="user_id"
+            onchange="this.form.submit()"
+            style="
+                width:100%;
+                padding:14px;
+                border-radius:12px;
+                font-size:16px;
+            "
+        >
+
+            <option value="">Select Player</option>
+
+            {% for user in users %}
+
+            <option
+                value="{{ user.id }}"
+                {% if selected_user and user.id == selected_user.id %}selected{% endif %}
+            >
+
+                {{ user.first_name }} {{ user.last_name }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+    </form>
+
+</div>
+
+{% if selected_user %}
+
+<h2 style="margin-top:10px;">
+    Group Predictions
+</h2>
+
+<div class="prediction-view-grid">
+
+{% for prediction in group_predictions %}
+
+{% set fixture = fixtures_by_id[prediction.fixture_id] %}
+
+{% if current_time >= fixture.kickoff %}
+
+{% set correct = false %}
+{% if fixture.home_score is not none and fixture.away_score is not none %}
+    {% if fixture.home_score > fixture.away_score and prediction.prediction == 'HOME' %}
+        {% set correct = true %}
+    {% elif fixture.home_score < fixture.away_score and prediction.prediction == 'AWAY' %}
+        {% set correct = true %}
+    {% elif fixture.home_score == fixture.away_score and prediction.prediction == 'DRAW' %}
+        {% set correct = true %}
+    {% endif %}
+{% endif %}
+
+<div class="fixture-card prediction-view-card
+{% if fixture.home_score is not none %}
+    {% if correct %}
+        correct-row
+    {% else %}
+        incorrect-row
+    {% endif %}
+{% endif %}
+">
+
+    <div class="fixture-group">
+        Group {{ fixture.group_name }}
+    </div>
+
+<div class="fixture-teams">
+
+    <img
+        src="{{ url_for('static', filename='images/' + fixture.home_flag) }}"
+        class="mini-flag"
+    >
+
+    <div class="vs-text">
+        vs
+    </div>
+
+    <img
+        src="{{ url_for('static', filename='images/' + fixture.away_flag) }}"
+        class="mini-flag"
+    >
+
+</div>
+
+    <div style="margin-top:16px;text-align:center;">
+
+        {% if prediction.prediction == 'HOME' %}
+            Predicted: {{ fixture.home_team }}
+        {% elif prediction.prediction == 'AWAY' %}
+            Predicted: {{ fixture.away_team }}
+        {% else %}
+            Predicted: Draw
+        {% endif %}
+
+    </div>
+
+    <div style="margin-top:12px;text-align:center;font-weight:bold;">
+
+        FT: {{ fixture.home_score }} - {{ fixture.away_score }}
+
+    </div>
+
+</div>
+
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<h2 style="margin-top:40px;">
+    Knockout Predictions
+</h2>
+
+<div class="fixtures-grid">
+
+{% for prediction in knockout_predictions %}
+
+{% set fixture = fixtures_by_id[prediction.fixture_id] %}
+
+{% if current_time >= fixture.kickoff %}
+
+{% set exact = false %}
+{% set result_correct = false %}
+
+{% if prediction.home_score == fixture.home_score and prediction.away_score == fixture.away_score %}
+    {% set exact = true %}
+{% endif %}
+{% if fixture.home_score is not none and fixture.away_score is not none %}
+    {% if prediction.home_score > prediction.away_score and fixture.home_score > fixture.away_score %}
+        {% set result_correct = true %}
+    {% endif %}
+
+    {% if prediction.home_score < prediction.away_score and fixture.home_score < fixture.away_score %}
+        {% set result_correct = true %}
+    {% endif %}
+
+    {% if prediction.home_score == prediction.away_score and fixture.home_score == fixture.away_score %}
+        {% set result_correct = true %}
+    {% endif %}
+{% endif %}
+
+<div class="fixture-card
+
+{% if fixture.home_score is not none %}
+
+    {% if exact %}
+        exact-row
+
+    {% elif result_correct %}
+        result-row
+
+    {% else %}
+        incorrect-row
+    {% endif %}
+
+{% endif %}
+">
+
+    <div class="knockout-stage">
+        {{ fixture.stage }}
+    </div>
+
+<div class="fixture-teams">
+
+    <img
+        src="{{ url_for('static', filename='images/' + fixture.home_flag) }}"
+        class="mini-flag"
+    >
+
+    <div class="vs-text">
+        vs
+    </div>
+
+    <img
+        src="{{ url_for('static', filename='images/' + fixture.away_flag) }}"
+        class="mini-flag"
+    >
+
+</div>
+
+    <div style="margin-top:16px;text-align:center;">
+
+        Prediction:
+        {{ prediction.home_score }}
+        -
+        {{ prediction.away_score }}
+
+    </div>
+
+    <div style="margin-top:12px;text-align:center;font-weight:bold;">
+
+        FT:
+        {{ fixture.home_score }}
+        -
+        {{ fixture.away_score }}
+
+    </div>
+
+</div>
+
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+{% endblock %}

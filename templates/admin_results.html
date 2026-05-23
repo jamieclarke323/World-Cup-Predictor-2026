@@ -22,6 +22,13 @@
 
     </p>
 
+    <p>
+
+        Current kickoff:
+        {{ fixture.kickoff }}
+
+    </p>
+
     <form
         action="/update-result"
         method="POST"
@@ -37,19 +44,30 @@
             type="number"
             name="home_score"
             min="0"
-            max="9"
+            max="19"
+            placeholder="Home"
         >
 
         <input
             type="number"
             name="away_score"
             min="0"
-            max="9"
+            max="19"
+            placeholder="Away"
         >
+
+        <br><br>
+
+        <input
+            type="datetime-local"
+            name="kickoff"
+        >
+
+        <br><br>
 
         <button type="submit">
 
-            Save Result
+            Save
 
         </button>
 
